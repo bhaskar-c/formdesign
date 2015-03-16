@@ -11,31 +11,39 @@ http://knowpapa.com/num2words/';
 			$(document).ready(function() {
 		    	$('form').submit(function(event) { //Trigger on form submit
 		    		$('.throw_error').empty(); //Clear the messages first
-		    		$('#success').empty();
+		    		$('#unuseditemresult').empty();
 		    
 		    		var postForm = { //Fetch form data
 		    			'urls' 	: $('textarea[name=urls]').val(),
 		    			'cssurl' : $('input[name=cssurl]').val()
 		    		
 		    		};
-					$("#LoadingImage").show();
+					$("#loadingimage").show();
 		    		$.ajax({ //Process the form using $.ajax()
 		    			type 		: 'POST', //Method type
 		    			url 		: 'process.php', //Your form processing file url
 		    			data 		: postForm, //Forms name
 		    			dataType 	: 'json',
 		    			success 	: function(data) {
-		    				$("#LoadingImage").hide();
+		    				$("#loadingimage").hide();
 		    			if (!data.success) { //If fails
 							if (data.errors.urls) { //Returned if any error from process.php
 		    					$('.throw_error').fadeIn(1000).html(data.errors.urls); //Throw relevant error
 		   					}
 		   				} else {
 							
-							$('#success').fadeIn(1000).append( "<h2>Unused Items</h2>");
-							$.each(data.posted, function(index, value) {
-									$('#success').fadeIn(1000).append( value + ", ");
+							$('#unuseditemresult').fadeIn(1000).append( "<h2>Unused Items</h2>");
+							$.each(data.unused, function(index, value) {
+									$('#unuseditemresult').fadeIn(1000).append( value + ", ");
 								});
+							
+							$('#useditemresult').fadeIn(1000).append( "<h2>Used Items</h2>");
+							$.each(data.used, function(index, value) {
+									$('#useditemresult').fadeIn(1000).append( value + ", ");
+								});
+							
+							
+							
 							}
 		    			}
 		    		});
@@ -44,13 +52,18 @@ http://knowpapa.com/num2words/';
 		    });
 		</script>
 		<style>
-			#success, #LoadingImage {
+			#useditemresult, #unuseditemresult, #loadingimage, .throw_error {
 				display: none;
-				color: green;
-				margin: 15px 5px;
-				
+				margin: 5px 2px;
 			}
+			#unuseditemresult, .throw_error {
+				color:tomato;
+				}
 
+			#useditemresult, #loadingimage {
+				color: green;
+				}
+			
 			textarea {
 				padding: 5px;
 				box-shadow: inset 0 0 5px #eee;
@@ -62,12 +75,6 @@ http://knowpapa.com/num2words/';
 				cursor: pointer;
 				
 			}
-
-			.throw_error {
-				color:tomato;
-				display: none;
-			}
-
 		</style>
 	</head>
 	<body>
@@ -78,8 +85,10 @@ http://knowpapa.com/num2words/';
 					<input type="text" name="cssurl"><br>
 					<input type="submit" value="Send" /><br>
 		</form>
-		<div id="LoadingImage">Fetching URL:  <img src="ajax-loader.gif" /></div>
+		<div id="loadingimage">Analysing CSS:  <img src="ajax-loader.gif" /></div>
 
-		<div id="success"></div>
+		<div id="unuseditemresult"></div>
+		<div id="useditemresult"></div>
+		
 	</body>
 </html>

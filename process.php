@@ -66,7 +66,8 @@
     	$form_data['errors']  = $errors;
     } else { //If not, process the form, and return true on success
     	$form_data['success'] = true;
-    	$form_data['posted'] = $unused;
+    	$form_data['unused'] = $unused;
+    	$form_data['used'] = $used;
     }
     //Return the data back to form.php
     echo json_encode($form_data);
