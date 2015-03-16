@@ -1,7 +1,5 @@
 <?php $prefill = 'http://knowpapa.com/
-http://knowpapa.com/num2words/
-http://knowpapa.com/visualizing-music/ 
-http://knowpapa.com/sitemap/';
+http://knowpapa.com/num2words/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +10,13 @@ http://knowpapa.com/sitemap/';
 		<script>
 			$(document).ready(function() {
 		    	$('form').submit(function(event) { //Trigger on form submit
-		    		$('#urls + .throw_error').empty(); //Clear the messages first
+		    		$('.throw_error').empty(); //Clear the messages first
 		    		$('#success').empty();
 		    
 		    		var postForm = { //Fetch form data
-		    			'urls' 	: $('textarea[name=urls]').val() //Store name fields value
+		    			'urls' 	: $('textarea[name=urls]').val(),
+		    			'cssurl' : $('input[name=cssurl]').val()
+		    		
 		    		};
 					$("#LoadingImage").show();
 		    		$.ajax({ //Process the form using $.ajax()
@@ -31,9 +31,12 @@ http://knowpapa.com/sitemap/';
 		    					$('.throw_error').fadeIn(1000).html(data.errors.urls); //Throw relevant error
 		   					}
 		   				} else {
-							var datarecd = $.each( data.posted, function(index,val){ index + ": " + val+ '<br>';});
-							$('#success').fadeIn(1000).append(datarecd); //If successful, than throw a success message
-		    				}
+							
+							$('#success').fadeIn(1000).append( "<h2>Unused Items</h2>");
+							$.each(data.posted, function(index, value) {
+									$('#success').fadeIn(1000).append( value + ", ");
+								});
+							}
 		    			}
 		    		});
 		    	    event.preventDefault(); //Prevent the default submit
@@ -41,17 +44,11 @@ http://knowpapa.com/sitemap/';
 		    });
 		</script>
 		<style>
-			ul {
-				font-family: Arial;
-				list-style-type: none;
-			}
-
 			#success, #LoadingImage {
 				display: none;
-				font-family: Arial;
 				color: green;
-				margin: 15px 85px;
-				font-size: 14px;
+				margin: 15px 5px;
+				
 			}
 
 			textarea {
@@ -62,36 +59,26 @@ http://knowpapa.com/sitemap/';
 
 			input[type=submit] {
 				padding: 3px 8px;
-				background: #eee;
-				margin-left: 85px;
 				cursor: pointer;
-				border: 1px solid #aaa;
-				font-size: 12px;
+				
 			}
 
 			.throw_error {
 				color:tomato;
-				font-size: 12px;
 				display: none;
 			}
 
-			label {
-				font-size: 13px;
-			}
 		</style>
 	</head>
 	<body>
 		<form method="post" name="postForm">
-			<ul>
-				<li>
-					<label for="urls">Name</label>
-					<textarea name="urls" id="urls" rows="5" cols="40"><?php echo $prefill; ?></textarea>
-					<span class="throw_error"></span>
-				</li>
-			</ul>
-			<input type="submit" value="Send" />
+					<label for="urls">URLs</label><br>
+					<textarea name="urls" id="urls" rows="5" cols="40"><?php echo $prefill; ?></textarea><br>
+					<span class="throw_error"></span><br>
+					<input type="text" name="cssurl"><br>
+					<input type="submit" value="Send" /><br>
 		</form>
-		<div id="LoadingImage" style="display: none">Fetching URL:  <img src="ajax-loader.gif" /></div>
+		<div id="LoadingImage">Fetching URL:  <img src="ajax-loader.gif" /></div>
 
 		<div id="success"></div>
 	</body>
