@@ -12,6 +12,7 @@ http://knowpapa.com/num2words/';
 		    	$('form').submit(function(event) { //Trigger on form submit
 		    		$('.throw_error').empty(); //Clear the messages first
 		    		$('#unuseditemresult').empty();
+		    		$('#useditemresult').empty();
 		    
 		    		var postForm = { //Fetch form data
 		    			'urls' 	: $('textarea[name=urls]').val(),
@@ -31,13 +32,13 @@ http://knowpapa.com/num2words/';
 		    					$('.throw_error').fadeIn(1000).html(data.errors.urls); //Throw relevant error
 		   					}
 		   				} else {
-							
-							$('#unuseditemresult').fadeIn(1000).append( "<h2>Unused Items</h2>");
+							var totalnumofitems = data.unused.length + data.used.length;
+							$('#unuseditemresult').fadeIn(1000).append( "<strong>Unused:</strong>"+ data.unused.length + "items" + (data.unused.length*100/totalnumofitems)+ "%<br>");
 							$.each(data.unused, function(index, value) {
 									$('#unuseditemresult').fadeIn(1000).append( value + ", ");
 								});
 							
-							$('#useditemresult').fadeIn(1000).append( "<h2>Used Items</h2>");
+							$('#useditemresult').fadeIn(1000).append( "<strong>Used:</strong>"+ data.used.length + "items" + (data.used.length*100/totalnumofitems)+ "%<br>");
 							$.each(data.used, function(index, value) {
 									$('#useditemresult').fadeIn(1000).append( value + ", ");
 								});
@@ -57,7 +58,7 @@ http://knowpapa.com/num2words/';
 				margin: 5px 2px;
 			}
 			#unuseditemresult, .throw_error {
-				color:tomato;
+				color:orange;
 				}
 
 			#useditemresult, #loadingimage {
